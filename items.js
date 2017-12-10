@@ -241,6 +241,10 @@ function ItemDAO(database) {
     this.getItem = function(itemId, callback) {
         "use strict";
 
+        var cursor = this.db.collection("item").find({ _id: itemId }).toArray((err, item) => {
+            callback(item[0]);
+        });
+
         /*
          * TODO-lab3
          *
@@ -250,15 +254,6 @@ function ItemDAO(database) {
          * _id and pass the matching item to the callback function.
          *
          */
-
-        var item = this.createDummyItem();
-
-        // TODO-lab3 Replace all code above (in this method).
-
-        // TODO Include the following line in the appropriate
-        // place within your code to pass the matching item
-        // to the callback.
-        callback(item);
     }
 
 
@@ -277,6 +272,21 @@ function ItemDAO(database) {
     this.addReview = function(itemId, comment, name, stars, callback) {
         "use strict";
 
+        var reviewDoc = {
+            name: name,
+            comment: comment,
+            stars: stars,
+            date: Date.now()
+        };
+
+        this.db.collection("item").updateOne({_id: itemId}, {
+            "$push": {
+                reviews: reviewDoc
+            }
+        }, function (err, doc) {
+            callback(doc);
+        });
+
         /*
          * TODO-lab4
          *
@@ -288,23 +298,6 @@ function ItemDAO(database) {
          * "name", "comment", "stars", and "date".
          *
          */
-
-        var reviewDoc = {
-            name: name,
-            comment: comment,
-            stars: stars,
-            date: Date.now()
-        }
-
-        // TODO replace the following two lines with your code that will
-        // update the document with a new review.
-        var doc = this.createDummyItem();
-        doc.reviews = [reviewDoc];
-
-        // TODO Include the following line in the appropriate
-        // place within your code to pass the updated doc to the
-        // callback.
-        callback(doc);
     }
 
 
@@ -313,7 +306,7 @@ function ItemDAO(database) {
 
         var item = {
             _id: 1,
-            title: "Gray Hooded Sweatshirt",
+            title: "Gray Hooded Sweatshirt hahah",
             description: "The top hooded sweatshirt we offer",
             slogan: "Made of 100% cotton",
             stars: 0,

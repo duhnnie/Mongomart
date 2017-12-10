@@ -28,6 +28,21 @@ function CartDAO(database) {
     this.getCart = function(userId, callback) {
         "use strict";
 
+        this.db.collection("cart").find({userId: userId}).toArray((err, userCart) => {
+            var response = {
+                userId: userId,
+                items: []
+            };
+
+            userCart.forEach((item) => {
+                item.items.forEach((item) => {
+                    response.items.push(item);
+                });
+            });
+
+            callback(response);
+        });
+
         /*
         * TODO-lab5
         *
@@ -38,19 +53,19 @@ function CartDAO(database) {
         *
         */
 
-        var userCart = {
-            userId: userId,
-            items: []
-        }
-        var dummyItem = this.createDummyItem();
-        userCart.items.push(dummyItem);
-
-        // TODO-lab5 Replace all code above (in this method).
-
-        // TODO Include the following line in the appropriate
-        // place within your code to pass the userCart to the
-        // callback.
-        callback(userCart);
+        // var userCart = {
+        //     userId: userId,
+        //     items: []
+        // }
+        // var dummyItem = this.createDummyItem();
+        // userCart.items.push(dummyItem);
+        //
+        // // TODO-lab5 Replace all code above (in this method).
+        //
+        // // TODO Include the following line in the appropriate
+        // // place within your code to pass the userCart to the
+        // // callback.
+        // callback(userCart);
     }
 
 
